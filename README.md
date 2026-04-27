@@ -1,56 +1,121 @@
-# Welcome to your Expo app 👋
+# TaskForce — React Native / Expo SDK 55 Port
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Acest folder conține portul aplicației web TaskForce către **React Native cu Expo SDK 55** și **expo-router v4**. Codul nu rulează în mediul Figma Make (care este web-only), dar este pregătit să fie copiat într-un proiect Expo local.
 
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Cum pornești proiectul local
 
 ```bash
-npm run reset-project
+# 1. Creează un proiect Expo nou cu SDK 55
+npx create-expo-app@latest TaskForce --template blank-typescript
+
+cd TaskForce
+
+# 2. Înlocuiește/copiază fișierele din acest folder peste rădăcina proiectului
+#    (păstrează structura: app/, src/, package.json, app.json, etc.)
+
+# 3. Instalează dependențele
+npx expo install expo-router react-native-safe-area-context react-native-screens \
+  expo-linking expo-constants expo-status-bar @react-native-async-storage/async-storage \
+  date-fns react-native-gesture-handler react-native-reanimated \
+  @expo/vector-icons expo-document-picker react-native-svg
+
+# 4. Pornește
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Mapări web → native
 
-### Other setup steps
+| Web | React Native |
+|---|---|
+| Tailwind classes | `StyleSheet.create` + tokens din `src/theme.ts` |
+| `localStorage` | `@react-native-async-storage/async-storage` |
+| `react-router` | `expo-router` (file-based routing în `app/`) |
+| `<div>` `<span>` `<button>` | `<View>` `<Text>` `<Pressable>` |
+| `<input>` `<textarea>` | `<TextInput>` |
+| `<select>` | Custom dropdown / `@react-native-picker/picker` |
+| `lucide-react` | `@expo/vector-icons` (Ionicons / Feather) |
+| `react-dnd` | `react-native-reanimated` + `react-native-gesture-handler` |
+| `confetti` | `react-native-confetti-cannon` |
+| `react-slick` | `react-native-snap-carousel` sau ScrollView |
+| `document.title` / SEO | nu se aplică |
+| CSS variables / `dark:` prefix | `useTheme()` din `src/contexts/ThemeContext.tsx` |
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## Ce e portat aici
 
-## Learn more
+- ✅ Scaffolding complet (package.json, app.json, tsconfig, babel.config)
+- ✅ `src/types.ts` — copiat fără modificări
+- ✅ `src/utils/storage.ts` — convertit la AsyncStorage (async API)
+- ✅ `src/utils/achievements.ts`, `src/utils/periodicChallenges.ts` — copiate (logică pură, depind doar de `date-fns`)
+- ✅ `src/contexts/ThemeContext.tsx` — RN cu AsyncStorage
+- ✅ `src/contexts/LanguageContext.tsx` — RN cu AsyncStorage (copiază obiectul `translations` din webul original)
+- ✅ `src/theme.ts` — tokens (culori, spacing, radii) pentru ambele teme
+- ✅ `src/contexts/AppDataContext.tsx` — state global pentru tasks, links, sessions, achievements
+- ✅ `app/_layout.tsx` — root layout cu providere
+- ✅ `app/(tabs)/_layout.tsx` — bottom-tabs (înlocuiește Sidebar + BottomNav)
+- ✅ `app/(tabs)/index.tsx` — Tasks (list + board toggle)
+- ✅ `app/(tabs)/calendar.tsx` — Calendar (stub funcțional)
+- ✅ `app/(tabs)/focus.tsx` — Focus Mode cu timer
+- ✅ `app/(tabs)/targets.tsx` — Targets & Goals + Periodic Challenges
+- ✅ `app/(tabs)/settings.tsx` — limbă, temă
+- ✅ `app/archive.tsx`, `app/trash.tsx`, `app/links.tsx` — accesibile prin navigare
+- ✅ Componente: `TaskRow`, `TaskModal`, `BoardView`, `AchievementBadge`, `FloatingAddButton`, `SearchBar`
 
-To learn more about developing your project with Expo, look at the following resources:
+## Ce a rămas pentru tine (TODO local)
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+1. **Copiază obiectul `translations` complet** din `src/app/contexts/LanguageContext.tsx` (web) în `src/contexts/LanguageContext.tsx` (RN). Am pus doar un sample pentru `en` și `ro` ca să arate structura.
+2. **Drag-and-drop pe Kanban**: web-ul folosește react-dnd. Pentru RN folosește `react-native-draggable-flatlist` sau `react-native-reanimated` + `Gesture`.
+3. **Confetti la achievements/challenges**: instalează `react-native-confetti-cannon` și înlocuiește efectele canvas.
+4. **File attachments**: `expo-document-picker` poate selecta fișiere; salvează URI-urile (nu base64-uri masive în AsyncStorage).
+5. **Notificări** (taskReminders, focusReminders din Settings): `expo-notifications`.
+6. **Date picker** pentru deadline: `@react-native-community/datetimepicker`.
+7. **Achievements section UI** (am pus doar `AchievementBadge`): replicați grila/categoriile din `AchievementsSection.tsx` web.
+8. **Sortarea pe tabel**: m-am limitat la 2 opțiuni; copiați logica completă din `Tasks.tsx` web dacă vreți.
+9. **Verificați iconurile**: am folosit `Ionicons`. Dacă vreți alt set (Feather, MaterialCommunity), schimbați importul.
 
-## Join the community
+## Note importante
 
-Join our community of developers creating universal apps.
+- **Nu folosește Tailwind** — totul prin `StyleSheet.create` așa cum ai cerut.
+- **AsyncStorage e async** — fiecare `getX()` din storage returnează `Promise<T>`. Codul a fost adaptat să folosească `useEffect` + `await`.
+- **expo-router** folosește file-based routing — fișierele din `app/` definesc rutele automat. `_layout.tsx` definește layout-ul părinte.
+- Versiunile din `package.json` corespund **Expo SDK 55** (lansat începutul lui 2026). Dacă instalezi cu `npx expo install` versiunile vor fi auto-aliniate.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Structura finală
+
+```
+react-native-port/
+├── README.md              ← acest fișier
+├── package.json
+├── app.json
+├── tsconfig.json
+├── babel.config.js
+├── app/                   ← rute (expo-router)
+│   ├── _layout.tsx
+│   ├── (tabs)/
+│   │   ├── _layout.tsx
+│   │   ├── index.tsx      ← Tasks
+│   │   ├── calendar.tsx
+│   │   ├── focus.tsx
+│   │   ├── targets.tsx
+│   │   └── settings.tsx
+│   ├── archive.tsx
+│   ├── trash.tsx
+│   └── links.tsx
+└── src/
+    ├── theme.ts
+    ├── types.ts
+    ├── utils/
+    │   ├── storage.ts
+    │   ├── achievements.ts
+    │   └── periodicChallenges.ts
+    ├── contexts/
+    │   ├── ThemeContext.tsx
+    │   ├── LanguageContext.tsx
+    │   └── AppDataContext.tsx
+    └── components/
+        ├── TaskRow.tsx
+        ├── TaskModal.tsx
+        ├── BoardView.tsx
+        ├── AchievementBadge.tsx
+        ├── FloatingAddButton.tsx
+        └── SearchBar.tsx
+```
