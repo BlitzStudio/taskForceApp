@@ -2,6 +2,7 @@ import { View, Text, Pressable, StyleSheet, ScrollView, Alert } from 'react-nati
 import { Link } from 'expo-router';
 import { useTheme } from '../../src/contexts/ThemeContext';
 import { useLanguage } from '../../src/contexts/LanguageContext';
+import { useAuth } from '../../src/contexts/AuthContext';
 
 import { spacing, radii } from '../../src/theme';
 import { useWindowDimensions } from 'react-native';
@@ -11,10 +12,22 @@ import { Ionicons } from '@expo/vector-icons';
 export default function SettingsScreen() {
   const { colors, theme, toggleTheme } = useTheme();
   const { t, language, setLanguage } = useLanguage();
+  const { logout } = useAuth();
 
 
   const { width } = useWindowDimensions();
   const isLargeScreen = width >= 768;
+
+  const handleLogout = () => {
+    Alert.alert(
+      t('settings.logout'),
+      t('settings.logoutConfirm') ?? 'Are you sure you want to logout?',
+      [
+        { text: t('taskModal.cancel'), style: 'cancel' },
+        { text: t('settings.logout'), onPress: logout, style: 'destructive' }
+      ]
+    );
+  };
 
 
 
@@ -69,6 +82,27 @@ export default function SettingsScreen() {
         </Pressable>
       </Section>
 
+      <Section title={t('settings.account')}>
+        <Pressable 
+          onPress={handleLogout}
+          style={({ pressed }) => [
+            styles.row, 
+            { 
+              backgroundColor: colors.surface, 
+              borderColor: colors.border,
+              opacity: pressed ? 0.7 : 1 
+            }
+          ]}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+            <Ionicons name="log-out-outline" size={20} color="#ef4444" />
+            <Text style={{ color: '#ef4444', fontWeight: '500' }}>
+              {t('settings.logout')}
+            </Text>
+          </View>
+        </Pressable>
+      </Section>
+
       <Section title="More">
         {!isLargeScreen && (
           <>
@@ -87,6 +121,7 @@ export default function SettingsScreen() {
     </ScrollView>
   );
 }
+
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   const { colors } = useTheme();
