@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { View, Text, FlatList, Pressable, StyleSheet, Modal, TextInput, Linking, KeyboardAvoidingView, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '../src/contexts/ThemeContext';
-import { useAppData } from '../src/contexts/AppDataContext';
-import { FloatingAddButton } from '../src/components/FloatingAddButton';
-import { spacing, radii } from '../src/theme';
+import { useTheme } from '../../src/contexts/ThemeContext';
+import { useAppData } from '../../src/contexts/AppDataContext';
+import { FloatingAddButton } from '../../src/components/FloatingAddButton';
+import { spacing, radii } from '../../src/theme';
 
 export default function LinksScreen() {
   const { colors } = useTheme();

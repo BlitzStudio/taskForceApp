@@ -1,8 +1,8 @@
 import { View, Text, FlatList, Pressable, StyleSheet, Alert } from 'react-native';
-import { useTheme } from '../src/contexts/ThemeContext';
-import { useAppData } from '../src/contexts/AppDataContext';
-import { TaskRow } from '../src/components/TaskRow';
-import { spacing, radii } from '../src/theme';
+import { useTheme } from '../../src/contexts/ThemeContext';
+import { useAppData } from '../../src/contexts/AppDataContext';
+import { TaskRow } from '../../src/components/TaskRow';
+import { spacing, radii } from '../../src/theme';
 
 export default function TrashScreen() {
   const { colors } = useTheme();

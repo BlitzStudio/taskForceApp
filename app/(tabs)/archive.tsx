@@ -1,9 +1,9 @@
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { useTheme } from '../src/contexts/ThemeContext';
-import { useLanguage } from '../src/contexts/LanguageContext';
-import { useAppData } from '../src/contexts/AppDataContext';
-import { TaskRow } from '../src/components/TaskRow';
-import { spacing } from '../src/theme';
+import { useTheme } from '../../src/contexts/ThemeContext';
+import { useLanguage } from '../../src/contexts/LanguageContext';
+import { useAppData } from '../../src/contexts/AppDataContext';
+import { TaskRow } from '../../src/components/TaskRow';
+import { spacing } from '../../src/theme';
 
 export default function ArchiveScreen() {
   const { colors } = useTheme();
@@ -11,6 +11,8 @@ export default function ArchiveScreen() {
   const { tasks, restoreTask, setStatus } = useAppData();
 
   const archived = tasks.filter((tk) => tk.isArchived && !tk.isTrashed);
+
+  
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>

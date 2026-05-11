@@ -18,7 +18,7 @@ function StackWithTheme() {
           contentStyle: { backgroundColor: colors.bg },
         }}
       >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />   
         <Stack.Screen name="archive" options={{ title: 'Archive' }} />
         <Stack.Screen name="trash" options={{ title: 'Trash Bin' }} />
         <Stack.Screen name="links" options={{ title: 'Saved Links' }} />
@@ -32,11 +32,11 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <ThemeProvider>
-          <LanguageProvider>
-            <AppDataProvider>
-              <StackWithTheme />
-            </AppDataProvider>
-          </LanguageProvider>
+            <LanguageProvider>
+              <AppDataProvider>
+                <StackWithTheme />
+              </AppDataProvider>
+            </LanguageProvider>
         </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
